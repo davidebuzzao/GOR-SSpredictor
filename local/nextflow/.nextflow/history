@@ -93,3 +93,17 @@
 2019-09-24 00:48:30	-	insane_church	-	f753769cd66a7481faab8a9a34065f99	a4aef572-3f55-4ad1-8a3b-78a8fc886c6a	nextflow parsingCSV.nf -resume
 2019-09-24 00:48:59	5.8s	stupefied_solvay	ERR	b562f7f775c9e46b31f33481ea7142ed	a4aef572-3f55-4ad1-8a3b-78a8fc886c6a	nextflow parsingCSV.nf -resume
 2019-09-24 00:49:45	22.3s	ridiculous_poitras	ERR	a27e4f691a754f10accd6236c4694fde	a4aef572-3f55-4ad1-8a3b-78a8fc886c6a	nextflow parsingCSV.nf -resume
+2019-09-24 09:14:49	1m 17s	confident_kalman	ERR	a27e4f691a754f10accd6236c4694fde	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf
+2019-09-24 09:16:27	2s	chaotic_lorenz	ERR	09aea0fb220e5e46f8a76611d6732133	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:19:49	1.9s	prickly_stonebraker	OK	f114e16cf683693c6668eeb070d4fb19	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:22:19	-	maniac_kalam	-	efd09560c5103c7031b2acf0e9202d9d	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:22:55	-	nauseous_varahamihira	-	474265a945baa0deb0c0542f3195b686	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:23:07	1.8s	grave_swanson	ERR	562ac7799e2b513be2271936ef884d8f	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:24:45	1.4s	drunk_easley	ERR	fbf75a579f3519304c5c1aacf0d89c02	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:25:39	1.7s	sad_murdock	ERR	2bd0a36841b41adc77fb76ce89564417	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:25:52	1.5s	reverent_jang	OK	10d057595aede0b5290256d9997c8287	d0b2e463-f4eb-4ca9-973b-7f4c00fb8e40	nextflow parsingCSV.nf -resume
+2019-09-24 09:41:32	-	shrivelled_majorana	-	49c151a01f1371552344c4330299fe02	deacebf3-9741-40e6-9400-8623f182af89	nextflow parsingCSV.nf
+2019-09-24 09:41:45	-	stoic_davinci	-	d79329cfb1514a027eb419bcafac2b5a	5036407b-7fb2-4c42-be8b-cc34ec3b0f12	nextflow parsingCSV.nf
+2019-09-24 09:42:11	-	happy_lavoisier	-	ec8cd90d3d64c43e8c9115e2455104b0	a878e2cd-d39a-47e5-b520-0a3765004b2a	nextflow parsingCSV.nf
+2019-09-24 09:42:57	-	lethal_davinci	-	3d448eb376297d9d5e97ef839851029f	170ebead-c10b-408d-a6eb-86a7b1e608e0	nextflow parsingCSV.nf
+2019-09-24 09:43:48	1m 22s	backstabbing_gilbert	OK	5728ed1849f91e84ce60b53ce522c83c	a3f50cf0-edf7-4324-b7db-db7cb4b05dca	nextflow parsingCSV.nf
