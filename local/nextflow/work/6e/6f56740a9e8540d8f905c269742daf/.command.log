@@ -1,0 +1,10 @@
+
+
+Building a new DB, current time: 09/25/2019 14:45:48
+New DB name:   /Users/davidebuzzao/Projects/GOR/local/nextflow/work/6e/6f56740a9e8540d8f905c269742daf/jPred4
+New DB title:  jPred4.fasta
+Sequence type: Protein
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 1348 sequences in 0.041326 seconds.
+mv: jPred4.fasta and /Users/davidebuzzao/Projects/GOR/dataset/db/jPred4.fasta are identical
