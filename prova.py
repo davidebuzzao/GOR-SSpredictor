@@ -1,9 +1,12 @@
 #!/usr/local/bin/python3
-from local.src.myClass import GOR
+from local.src.myClass import GOR, prof_parse
 import sys 
 import numpy as np
 matrices_dir = sys.argv[1]
-np.save()
+sequence = sys.argv[2]
+
+profile = prof_parse(sequence)
 model = GOR()
 model.load(matrices_dir)
-print(model.dictionary['H'])
+prediction = model.predict(profile, padding=True)
+print(prediction)

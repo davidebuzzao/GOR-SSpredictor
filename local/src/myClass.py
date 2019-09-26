@@ -52,7 +52,7 @@ class GOR:
             profile = np.vstack((padding, profile, padding))
 
         i, j, k = 0, 8, 17
-        while k < len(profile):
+        while k <= len(profile):
             for index in range(3):
                 probabilities[index] = np.sum(self.dictionary[GOR.ss[index]] * profile[i:k])
             
@@ -124,13 +124,22 @@ def prof_parse(path):
     return(prof)
 
 
+def performance(expected, predicted):
+
+def compute_similarity(expected, predicted):
+    dictionary = {'H':'100', 'E':'010', 'C':'001'}
+    true = []
+    pred = []
+    with open(expected) as dssp, open(predicted) as gor:
+        for i,j in zip(dssp, gor):
+            for len(i)
+
 if __name__ == '__main__':
     try:
         filein = sys.argv[1]
         profiles_dir = sys.argv[2]
         dssps_dir = sys.argv[3]
         matrices_dir = sys.argv[4]
-        #sequence = sys.argv[4]
     except:
         raise SystemExit
     else:
@@ -148,7 +157,5 @@ if __name__ == '__main__':
                     model.fit(profile, dssp, True)
 
         model.normalize()
-        #prediction = prof_parse(sequence)
         #np.set_printoptions(threshold=np.inf)
-        #predicted = model.predict(prediction, padding=True)
         model.save(matrices_dir)
