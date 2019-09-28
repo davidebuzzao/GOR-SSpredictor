@@ -34,14 +34,22 @@ class GOR:
         GOR.num_of_updates += 1
 
     def normalize(self):
+        '''Normalizr matrices'''
         normalizer = 0
         for index in range(3):
             self.overall += self.dictionary[GOR.ss[index]]
             normalizer += self.ss_count[GOR.ss[index]]
-
-        # ### INFORMATION MATRICES ###
+        
         for index in range(3):
-            self.dictionary[GOR.ss[index]] = np.log((self.dictionary[GOR.ss[index]]/normalizer) / ((self.overall/normalizer)*(self.ss_count[GOR.ss[index]]/normalizer)))
+            self.dictionary[GOR.ss[index]] = np.log(self.dictionary[GOR.ss[index]]/normalizer)
+            self.ss_count[GOR.ss[index]]/normalizer
+        self.overall/normalizer
+
+    def information(self):
+        '''Information matrices'''
+        self.normalize()
+        for index in range(3):
+            self.dictionary[GOR.ss[index]] = np.log(self.dictionary[GOR.ss[index]] / ((self.overall)*(self.ss_count[GOR.ss[index]])))
 
     def predict(self, profile, padding=True):
         predicted_sequence = ''
@@ -72,41 +80,41 @@ class GOR:
             self.dictionary[GOR.ss[index]] = np.load(matrices_dir + input_names[index] + '.npy')
 
 
-# class PSSM:
+class PSSM:
 
-#     num_of_instances = 0
+    num_of_instances = 0
 
-#     def __init__(self, path_profile, type_profile):
-#         import numpy as np
-#         init_profile = []
+    def __init__(self, path_profile, type_profile):
+        import numpy as np
+        init_profile = []
         
-#         if type_profile == 'psiblast':
-#             with open(path_profile) as pssm_file:
-#                 for row in pssm_file:
-#                     row = row.rstrip().split()[22:-2]
+        if type_profile == 'psiblast':
+            with open(path_profile) as pssm_file:
+                for row in pssm_file:
+                    row = row.rstrip().split()[22:-2]
 
-#                     init_profile.append(row)
-#                 self.prof = np.array(init_profile, dtype=np.float64)
+                    init_profile.append(row)
+                self.prof = np.array(init_profile, dtype=np.float64)
         
-#         PSSM.num_of_instances += 1
+        PSSM.num_of_instances += 1
 
-#     def normalize(self):
-#         residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
+    def normalize(self):
+        residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
         
-#         for row in range(len(self.prof)): 
-#             for col in range(len(residues)):
-#                 self.prof[row][col] = float(self.prof[row][col])/100
+        for row in range(len(self.prof)): 
+            for col in range(len(residues)):
+                self.prof[row][col] = float(self.prof[row][col])/100
 
-#     def shape(self):
-#         row = 1
-#         column = len(self.prof)
-#         return((row, column))
+    def shape(self):
+        row = 1
+        column = len(self.prof)
+        return((row, column))
 
-#     # def __str__(self):
-#     #     return str(self.prof)
+    # def __str__(self):
+    #     return str(self.prof)
     
-#     def __repr__(self):
-#         return str(self.prof)
+    def __repr__(self):
+        return str(self.prof)
 
 def prof_parse(path):
     residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
@@ -120,19 +128,8 @@ def prof_parse(path):
     for row in range(len(prof)): 
         for col in range(len(residues)):
             prof[row][col] = float(prof[row][col])/100
-    
     return(prof)
 
-
-def performance(expected, predicted):
-
-def compute_similarity(expected, predicted):
-    dictionary = {'H':'100', 'E':'010', 'C':'001'}
-    true = []
-    pred = []
-    with open(expected) as dssp, open(predicted) as gor:
-        for i,j in zip(dssp, gor):
-            for len(i)
 
 if __name__ == '__main__':
     try:
@@ -156,6 +153,6 @@ if __name__ == '__main__':
                     out = np.vstack((padding, profile, padding))
                     model.fit(profile, dssp, True)
 
-        model.normalize()
+        model.information()
         #np.set_printoptions(threshold=np.inf)
         model.save(matrices_dir)
