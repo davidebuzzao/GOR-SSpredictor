@@ -161,7 +161,7 @@ class Svm(Database):
                 3. iterate a val in a range of N*20
                     4. iterate 20 times (every column of a profile's row) for every line in the window[i:k]
                         - if the column is zero skip
-                        - else save the column in the specified format (val:column) and increase the val
+                        - else save the column in the specified format (val:column)
         '''
         profiles = Database(datatype='psiblast', raw_file=self.raw_file)
         profiles.build_dataset(self.id_list)
