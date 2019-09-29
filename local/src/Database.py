@@ -3,7 +3,13 @@ from sys import argv
 import numpy as np
 
 class Database:
-
+    '''
+    The class Database is intended to be updated as soon as some new formatted files 
+    will be introduced in my sbioinformatics pipelines. For the time being, sequence profiles
+    coming from psiblast runs and dssp outputs are parsed both starting from raw and pre-pruned 
+    files, then datasets are built by stacking information of single objects (by the use of other classes)
+    in order to deal with the whole DATABASE when training models in a Machine Learning framemwork.
+    '''
     dataset: list
     datatype: str
     raw_file: bool
@@ -38,6 +44,7 @@ class Database:
                     else:
                         id = Pssm('./psiblast/bin/' + id + '.npy')
                     self.__append__(id.parser())
+                return self.dataset
 
             elif self.datatype == 'dssp':
                 for id in filein:
@@ -49,14 +56,18 @@ class Database:
                         id = id.rstrip()
                         id = Dssp('./dssp/ss/' + id + '.ss')
                     self.__append__(id.parser())
+                return self.dataset
 
-            # elif self.datatype == 'svm':
-            #     self.__append__(id.parser())
-        return self.dataset
+            elif self.datatype == 'svm':
+                svm = Svm(id_list, raw_file=self.raw_file, window=self.window)
+                svm_dataset = svm.parser()  
+                return(svm_dataset)
 
     def __iter__(self):
         return(self)
 
+############################################################
+############################################################
 
 class Pssm(Database):
 
@@ -90,6 +101,8 @@ class Pssm(Database):
         profile = self.profile/100
         return(profile)
 
+############################################################
+############################################################
 
 class Dssp(Database):
     
@@ -114,7 +127,7 @@ class Dssp(Database):
             with open(self.path_dssp) as dssp_file:
                 flag = 0
                 for row in dssp_file:
-                    if row.find('  #  RESIDUE') == 0: ## when --# Residue appears in row
+                    if row.find('  #  RESIDUE') == 0:
                         flag = 1
                         continue
                     if flag == 1:
@@ -137,6 +150,8 @@ class Dssp(Database):
 
         return frequencies
 
+############################################################
+############################################################
 
 class Svm(Database):
 
@@ -197,13 +212,16 @@ class Svm(Database):
         
         return self.svm_data
 
+############################################################
+############################################################
+
 if __name__ == '__main__':
     id_input = argv[1]
     #output_file = argv[2]
-
-    svm = Svm(id_input, raw_file=False, window=17)
-    svm_dataset = svm.parser()
     
+    svm = Database(datatype='svm', raw_file=False, window=17)
+    svm_dataset = svm.build_dataset(id_input)
+
     #with open(output_file, 'w') as fileout:
     for i in svm_dataset:
         row = ''.join(str(i))
