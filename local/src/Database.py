@@ -15,7 +15,7 @@ class Database:
     raw_file: bool
     window: int
 
-    def __init__(self, datatype=str, raw_file=False, window=17):
+    def __init__(self, datatype=str, raw_file=False, window=17, path=False):
         try:
             datatype != False
         except:
@@ -26,7 +26,8 @@ class Database:
             self.datatype = datatype
             self.raw_file = raw_file
             self.window = window
-        
+            self.path = path
+
     def __len__(self):
         return len(self.dataset) 
     
@@ -40,9 +41,9 @@ class Database:
                 for id in filein:
                     id = id.rstrip()
                     if self.raw_file != False:
-                        id = Pssm('./psiblast/pssm/' + id + '.pssm')
+                        id = Pssm(self.path + id + '.pssm')
                     else:
-                        id = Pssm('./psiblast/bin/' + id + '.npy')
+                        id = Pssm(self.path + id + '.npy')
                     self.__append__(id.parser())
                 return self.dataset
 
@@ -51,16 +52,16 @@ class Database:
                     if self.raw_file != False:
                         chain = id.rstrip().split('_')[1]
                         id = id.rstrip().split('_')[0]
-                        id = Dssp('./dssp/raw/' + id + '.dssp', chain)
+                        id = Dssp(self.path + id + '.dssp', chain)
                     else:
                         id = id.rstrip()
-                        id = Dssp('./dssp/ss/' + id + '.ss')
+                        id = Dssp(self.path + id + '.dssp')
                     self.__append__(id.parser())
                 return self.dataset
 
             elif self.datatype == 'svm':
                 svm = Svm(id_list, raw_file=self.raw_file, window=self.window)
-                svm_dataset = svm.parser()  
+                svm_dataset = svm.encode()  
                 return(svm_dataset)
 
     def __iter__(self):
@@ -94,12 +95,18 @@ class Pssm(Database):
                             init_profile.append(row[22:-2])
 
             self.profile = np.array(init_profile, dtype=np.float64)
+            self.profile/100
         else:
             path_profile = self.path_profile
             self.profile = np.load(path_profile)
         
-        profile = self.profile/100
-        return(profile)
+        return(self.profile)
+    
+    def __iter__(self):
+        return(self)
+
+    def __len__(self):
+        return len(self.dataset)
 
 ############################################################
 ############################################################
@@ -149,6 +156,12 @@ class Dssp(Database):
                 frequencies[ch] += 1
 
         return frequencies
+    
+    def __iter__(self):
+        return(self)
+
+    def __len__(self):
+        return len(self.dataset)
 
 ############################################################
 ############################################################
@@ -164,9 +177,9 @@ class Svm(Database):
 
         self.svm_data = []
         self.padding = np.zeros((self.window//2,20))
-        self.dictionary = {'H': [1,0,0], 'E': [0,1,0], '-': [0,0,1]}
+        self.dictionary = {'H': '1', 'E': '2', '-': '3'}
     
-    def parser(self):
+    def encode(self):
         '''
         The main idea:
         - build profiles and dssps dataset
@@ -192,8 +205,8 @@ class Svm(Database):
 
             i, j, k = 0, self.window//2, self.window
             while k <= len(dssp):
-                row = []
-                row.append(self.dictionary[dssp[j]])
+                row = ''
+                row += self.dictionary[dssp[j]]
 
                 val = 1
                 num_line = i
@@ -202,28 +215,26 @@ class Svm(Database):
                         if profile[num_line][character] == 0.0: 
                             val += 1
                         else:
-                            string = str(val) + ':' + str(profile[num_line][character])
-                            row.append(string)
+                            string = ' ' + str(val) + ':' + str(profile[num_line][character])
+                            row += string
                             val += 1
                     num_line += 1
-                self.svm_data.append(row)
-                
+                if len(row) > 1:
+                    self.svm_data.append(row)
                 i, j, k = i+1, j+1, k+1
         
         return self.svm_data
 
+    def __iter__(self):
+        return(self)
+        
 ############################################################
 ############################################################
 
 if __name__ == '__main__':
     id_input = argv[1]
-    #output_file = argv[2]
-    
+
     svm = Database(datatype='svm', raw_file=False, window=17)
     svm_dataset = svm.build_dataset(id_input)
-
-    #with open(output_file, 'w') as fileout:
     for i in svm_dataset:
-        row = ''.join(str(i))
-        print(row)
-        #fileout.write(row + '\n')
+        print(i)

@@ -11,15 +11,15 @@ def pretty_dictionary(D):
     print()
 
 def compute_similarity(expected, predicted):
-    with open(expected) as dssp, open(predicted) as pred:
-        true = []
-        pred = []
-        for i,j in zip(expected, predicted):
-            i = i.rstrip()
-            j = j.rstrip()
-            for k in range(len(i)):
-                true.append(i[k])
-                pred.append(j[k])
+    # with open(expected) as dssp, open(predicted) as predic:
+    true = []
+    pred = []
+    for i,j in zip(expected, predicted):
+        i = i.rstrip()
+        j = j.rstrip()
+        for k in range(len(i)):
+            true.append(i[k])
+            pred.append(j[k])
     return(true, pred)
 
 #####################################
@@ -43,6 +43,7 @@ def print_performance(confusion_matrix):
     MCC = ((TP * TN) - (FN * FP)) / (np.sqrt((TP + FN) * (TP + FP) * (TN + FN) * (TN + FP)))
    
     return(MCC, ACC, TPR, PPV, FPR, NPV)
+
 
 def ss_compo(dssp_file):
     ss = ['H', 'E', '-']
@@ -69,7 +70,7 @@ if __name__ == '__main__':
     x,y = compute_similarity(args.DSSP, args.SSpredictions)
     multiclass_conf_mat = multilabel_confusion_matrix(x,y, labels=['H','E','-'])
     total = np.sum(multiclass_conf_mat[0])
-    print(multiclass_conf_mat)
+    print('\nHelix one-vs-all:\n', multiclass_conf_mat[0], '\n\nStrand one-vs-all:\n', multiclass_conf_mat[1], '\n\nCoil one-vs-all:\n', multiclass_conf_mat[2] )
     ss = ['H', 'E', 'C']
     true_predicted = 0
 
@@ -79,5 +80,7 @@ if __name__ == '__main__':
         MCC, ACC, TPR, PPV, FPR, NPV = print_performance(multiclass_conf_mat[index])
         dictionary[ss[index]] = [MCC, ACC, TPR, PPV, FPR, NPV]
     d = pd.DataFrame(data=dictionary, index=['MCC', 'ACC', 'TPR', 'PPV', 'FPR', 'NPV'], dtype=float)
+
+    q3_score = true_predicted/total
     print(d)
-    print(true_predicted/total)
+    print('\nThis is the Q3 score:\t%f\n' %q3_score)

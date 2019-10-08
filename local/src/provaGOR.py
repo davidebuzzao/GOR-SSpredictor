@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-from local.src.myClass import GOR, prof_parse
+from local.src.gor import GOR, prof_parse
 import sys 
 import numpy as np
 matrices_dir = sys.argv[1]
