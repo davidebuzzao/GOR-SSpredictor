@@ -27,9 +27,9 @@ def compute_similarity(expected, predicted):
 #####################################
 
 def print_performance(confusion_matrix):
+    TN = confusion_matrix[0][0]
     TP = confusion_matrix[1][1]
     FP = confusion_matrix[0][1]
-    TN = confusion_matrix[0][0]
     FN = confusion_matrix[1][0]
         
     ACC = (TP + TN)/(TP + FP + TN + FN)
@@ -40,13 +40,13 @@ def print_performance(confusion_matrix):
     PPV = TP / (TP + FP)
     NPV = TN / (TN + FN)
                     
-    MCC = ((TP * TN) - (FN * FP)) / (np.sqrt((TP + FN) * (TP + FP) * (TN + FN) * (TN + FP)))
-   
+    MCC = ((TP * TN) - (FN * FP)) / (np.sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)))
+    
     return(MCC, ACC, TPR, PPV, FPR, NPV)
 
 
 def ss_compo(dssp_file):
-    ss = ['H', 'E', '-']
+    ss = ['-', 'H', 'E']
     dictionary={'H':0, 'E':0, '-':0}
     for line in dssp_file:
         line = str(line.rstrip())
@@ -68,10 +68,10 @@ if __name__ == '__main__':
     #pretty_dictionary(ss_composition)
     
     x,y = compute_similarity(args.DSSP, args.SSpredictions)
-    multiclass_conf_mat = multilabel_confusion_matrix(x,y, labels=['H','E','-'])
+    multiclass_conf_mat = multilabel_confusion_matrix(x,y, labels=['-','H','E'])
     total = np.sum(multiclass_conf_mat[0])
-    print('\nHelix one-vs-all:\n', multiclass_conf_mat[0], '\n\nStrand one-vs-all:\n', multiclass_conf_mat[1], '\n\nCoil one-vs-all:\n', multiclass_conf_mat[2] )
-    ss = ['H', 'E', 'C']
+    print('\n\nCoil one-vs-all:\n', multiclass_conf_mat[0], '\n\nHelix one-vs-all:\n', multiclass_conf_mat[1], '\n\nStrand one-vs-all:\n', multiclass_conf_mat[2])
+    ss = ['-', 'H', 'E']
     true_predicted = 0
 
     dictionary = {'H': None, 'E': None, 'C': None}
