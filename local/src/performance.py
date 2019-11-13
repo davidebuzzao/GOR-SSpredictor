@@ -11,7 +11,6 @@ def pretty_dictionary(D):
     print()
 
 def compute_similarity(expected, predicted):
-    # with open(expected) as dssp, open(predicted) as predic:
     true = []
     pred = []
     for i,j in zip(expected, predicted):

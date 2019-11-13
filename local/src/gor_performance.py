@@ -51,7 +51,6 @@ if __name__ == '__main__':
                 x,y = compute_similarity(expectation, prediction)
                 multiclass_conf_mat = multilabel_confusion_matrix(x,y, labels=['-','H','E'])
                 total = np.sum(multiclass_conf_mat[0])
-                #print(multiclass_conf_mat)
 
                 true_predicted = 0
 
