@@ -18,7 +18,7 @@ class Gor:
     def __str__(self):
         return '\n{0}\n{1}\n{2}\n'.format(self.dictionary[0],self.dictionary[1],self.dictionary[2])
 
-    def fit(self, dataset=False, padding=True):
+    def train(self, dataset=False, padding=True):
         try: dataset != False
         except: 
             print('Method usage: obj.fit(dataset=X)')
@@ -77,8 +77,6 @@ class Gor:
                 while k <= len(prof):
                     for index in range(3):
                         probabilities[index] = np.sum(self.dictionary[self.ss[index]] * prof[i:k])
-                    # print(probabilities)
-                    # print(self.ss[probabilities.index(max(probabilities))])
                     seq_pred += self.ss[probabilities.index(max(probabilities))]
                     i,j,k = i+1, j+1, k+1
                 

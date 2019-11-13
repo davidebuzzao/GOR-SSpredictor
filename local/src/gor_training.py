@@ -14,7 +14,7 @@ if __name__ == '__main__':
     try:
         filein = sys.argv[1]
     except:
-        print('Program Usage: python3 svm_encode.py <file.txt>')
+        print('Program Usage: gor_training <cv_train.txt>')
         raise SystemExit
     else:
         with open(filein) as f:
@@ -35,6 +35,6 @@ if __name__ == '__main__':
                 dataset = Dataset(data_id, setype='trainingset').build(profile=dict_prof, dssp=dict_dssp).fetch_dict()
 
                 model = Gor(window=17)\
-                        .fit(dataset=dataset, padding=True)\
+                        .train(dataset=dataset, padding=True)\
                         .information()\
                         .save(matrices_dir=wd)

@@ -14,7 +14,7 @@ if __name__ == '__main__':
     try:
         filein = sys.argv[1]
     except:
-        print('Program Usage: python3 svm_encode.py <file.txt>')
+        print('Program Usage: gor_prediction <cv_pred.txt>')
         raise SystemExit
     else:
         with open(filein) as f:

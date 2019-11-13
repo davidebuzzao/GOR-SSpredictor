@@ -42,7 +42,7 @@ def print_performance(confusion_matrix):
                     
     MCC = ((TP * TN) - (FN * FP)) / (np.sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN)))
     
-    return(MCC, ACC, TPR, PPV, FPR, NPV)
+    return(MCC, ACC, TPR, PPV)
 
 
 def ss_compo(dssp_file):
