@@ -6,6 +6,7 @@
 dataset
 dssp
 psiblast
+local/bin
 local/nextflow
 local/src/old_scripts
 local/docs
