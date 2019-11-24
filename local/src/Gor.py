@@ -14,6 +14,7 @@ class Gor:
         self.dictionary = {'-': tensor[0], 'H': tensor[1], 'E': tensor[2]}
         self.ss_count = {'-': 0, 'H': 0, 'E': 0}
         self.overall = np.zeros((17,20))
+        self.pad = np.zeros((self.window//2,20))
 
     def __str__(self):
         return '\n{0}\n{1}\n{2}\n'.format(self.dictionary[0],self.dictionary[1],self.dictionary[2])
@@ -28,8 +29,15 @@ class Gor:
                 prof = val['profile']
                 dssp = val['dssp']
 
+                if padding: 
+                    prof = np.vstack((self.pad, prof, self.pad))
+                    dssp = ' '*8 + dssp + ' '*8
+
                 i, j, k = 0, self.window//2, self.window
                 while k <= len(dssp):
+                    if np.sum(prof[i:k]) == 0:
+                        i,j,k = i+1, j+1, k+1
+                        continue
                     self.dictionary[dssp[j]] += prof[i:k]
                     self.ss_count[dssp[j]] += 1
                     i,j,k = i+1, j+1, k+1
@@ -39,14 +47,14 @@ class Gor:
     def normalize(self):
         '''Normalizer of matrices'''
         normalizer = 0
-        for index in range(3):
+        for index in range(len(self.ss)):
             self.overall += self.dictionary[self.ss[index]]
             normalizer += self.ss_count[self.ss[index]]
-        
-        for index in range(3):
+
+        for index in range(len(self.ss)):
             self.dictionary[self.ss[index]] /= normalizer
             self.ss_count[self.ss[index]] /= normalizer
-        
+        #print(np.sum(self.dictionary['-']) + np.sum(self.dictionary['H']) + np.sum(self.dictionary['E']))
         self.overall /= normalizer
         return(self)
 
@@ -54,7 +62,7 @@ class Gor:
         '''Information matrices'''
         self.normalize()
 
-        for index in range(3):
+        for index in range(len(self.ss)):
             self.dictionary[self.ss[index]] = np.log(self.dictionary[self.ss[index]] / ((self.overall)*(self.ss_count[self.ss[index]])))
         return(self)
 
@@ -64,13 +72,16 @@ class Gor:
             print('Method usage: obj.fit(dataset=X)')
             raise SystemExit
         else:
+            zeros = []
             for key,val in dataset.items():
                 prof = val['profile']
+                if np.sum(prof) == 0:
+                    zeros.append(key)
+
                 probabilities = [0,0,0]
 
                 if padding: 
-                    pad = np.zeros((self.window//2,20))
-                    prof = np.vstack((pad, prof, pad))
+                    prof = np.vstack((self.pad, prof, self.pad))
 
                 seq_pred = ''
                 i,j,k = 0, self.window//2, self.window
@@ -81,70 +92,23 @@ class Gor:
                     i,j,k = i+1, j+1, k+1
                 
                 val['gor_pred'] = seq_pred
+            
+            if len(zeros) > 0:
+                print('This profiles are all zeros\n', zeros)
 
             return(dataset)
     
     def save(self, matrices_dir):
         output_names = ['coil_info_matrix', 'helix_info_matrix', 'strand_info_matrix']
-        for index in range(3):
+        for index in range(len(self.ss)):
             np.save(matrices_dir + output_names[index], self.dictionary[self.ss[index]])
         return(self)
 
     def load(self, matrices_dir):
         input_names = ['coil_info_matrix', 'helix_info_matrix', 'strand_info_matrix']
-        for index in range(3):
+        for index in range(len(self.ss)):
             self.dictionary[self.ss[index]] = np.load(matrices_dir + input_names[index] + '.npy')
         return(self)
-
-# class PSSM:
-
-#     num_of_instances = 0
-
-#     def __init__(self, path_profile, type_profile):
-#         import numpy as np
-#         init_profile = []
-        
-#         if type_profile == 'psiblast':
-#             with open(path_profile) as pssm_file:
-#                 for row in pssm_file:
-#                     row = row.rstrip().split()[22:-2]
-
-#                     init_profile.append(row)
-#                 self.prof = np.array(init_profile, dtype=np.float64)
-        
-#         PSSM.num_of_instances += 1
-
-#     def normalize(self):
-#         residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
-        
-#         for row in range(len(self.prof)): 
-#             for col in range(len(residues)):
-#                 self.prof[row][col] = float(self.prof[row][col])/100
-
-#     def shape(self):
-#         row = 1
-#         column = len(self.prof)
-#         return((row, column))
-
-#     # def __str__(self):
-#     #     return str(self.prof)
-    
-#     def __repr__(self):
-#         return str(self.prof)
-
-# def prof_parse(path):
-#     residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
-#     init_profile=[]
-#     with open(path) as pssm_file:
-#         for row in pssm_file:
-#             row = row.rstrip().split()[22:-2]
-#             init_profile.append(row)
-#         prof = np.array(init_profile, dtype=np.float64)
-        
-#     for row in range(len(prof)): 
-#         for col in range(len(residues)):
-#             prof[row][col] = float(prof[row][col])/100
-#     return(prof)
 
 # if __name__ == '__main__':
 #     try:

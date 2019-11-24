@@ -25,14 +25,14 @@ if __name__ == '__main__':
                 wd = items[0]
                 data_id = items[1]
                 data_pkl = items[2]
-
+                setype = wd.split('/')[1]
 
         # Build the dataset from scratch
-                prof = Pssm(data_id, setype='trainingset', raw_file=False).parse()
+                prof = Pssm(data_id, setype=setype, raw_file=False).parse()
                 dict_prof = prof.fetch_dict()
-                dssp = Dssp(data_id, setype='trainingset', raw_file=False).parse()
+                dssp = Dssp(data_id, setype=setype, raw_file=False).parse()
                 dict_dssp = dssp.fetch_dict()
-                dataset = Dataset(data_id, setype='trainingset').build(profile=dict_prof, dssp=dict_dssp).fetch_dict()
+                dataset = Dataset(data_id, setype=setype).build(profile=dict_prof, dssp=dict_dssp).fetch_dict()
 
                 model = Gor(window=17)\
                         .train(dataset=dataset, padding=True)\

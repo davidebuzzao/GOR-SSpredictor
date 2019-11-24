@@ -1,4 +1,7 @@
+.gitignore
 dataset
 dssp
 psiblast
-local/nextflow/.nextflow/
+local/nextflow
+local/src/old_scripts
+local/docs

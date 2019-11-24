@@ -1,11 +1,16 @@
 #!/usr/local/bin/python3
-from sys import argv
-import numpy as np
-import pickle
+import numpy as np, pickle
 from typing import List, Dict
+from sys import argv
 
 class Dataset():
-
+    '''
+    The class Dataset is intended to be updated as soon as some new formatted files 
+    will be introduced in my bioinformatics pipelines. For the time being, sequence profiles
+    coming from psiblast runs and dssp outputs are parsed both starting from raw and pre-pruned 
+    files, then datasets are built by stacking information of single objects (by the use of other classes)
+    in order to deal with the whole DATABASE when training models in a Machine Learning framemwork.
+    '''
     info_stored: List
     dataset: Dict
     
@@ -96,11 +101,9 @@ class Pssm():
                         sequence = fasta_file.read().splitlines()[1]
                         for res in sequence:
                             prof = np.zeros(20)
-                            try: self.residues.index(sequence[res])
-                            except: continue
-                            else: 
-                                prof[self.residues.index(res)] = 1.0
-                                init_profile.append(prof)
+                            if res not in self.residues: continue
+                            prof[self.residues.index(res)] = 1.0
+                            init_profile.append(prof)
                     self.dataset[id] = np.array(init_profile, dtype=np.float64)
                     np.save('./dataset/' + self.setype + '/psiblast/bin/' + id, self.dataset[id])
                 else:
@@ -124,7 +127,7 @@ class Pssm():
                                 self.dataset[id] = array
                                 np.save('./dataset/' + self.setype + '/psiblast/bin/' + id, array)
                         else:
-                            self.dataset[id] = array/100
+                            self.dataset[id] = array
                             np.save('./dataset/' + self.setype + '/psiblast/bin/' + id, array)
 
             else:   
@@ -144,16 +147,17 @@ class Pssm():
 
 class Dssp():
 
-    def __init__(self, id_file, setype, raw_file=False):
+    def __init__(self, id_file, setype, raw_file=False, pdb=False):
         with open(id_file) as filein:
             id_list = filein.read().splitlines()
         
         self.residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
         self.raw_file = raw_file
         self.setype = setype
+        self.pdb = pdb
         self.dataset = dict((id, False) for id in id_list)
 
-    def parse(self, chain=False):
+    def parse(self):
         try:
             self.raw_file == False
         except:
@@ -163,10 +167,20 @@ class Dssp():
             dictionary = {  'H': 'H', 'G': 'H', 'I': 'H', 
                             'E': 'E', 'B': 'E', 
                             'C': '-', 'S': '-', 'T': '-', ' ': '-'}
-            for id in self.dataset:
-                path_to_dssp = './dataset/' +  self.setype + '/dssp'
-                if self.raw_file:
-                    with open(path_to_dssp + '/raw/' + id + '.dssp') as dssp_file:
+            unknown = []
+            for key in self.dataset.keys():
+                if self.pdb: 
+                    ch = key.split('_')[1]
+                    key = key.split('_')[0]
+                if self.raw_file: 
+                    try: 
+                        print('dataset/' +  self.setype + '/dssp/raw/' + key + '.dssp')
+                        dssp_file = open('dataset/' +  self.setype + '/dssp/raw/' + key + '.dssp')
+                    except: 
+                        unknown.append(key)
+                        continue
+                    else:
+                        ss = ''
                         flag = 0
                         for row in dssp_file:
                             if row.find('  #  RESIDUE') == 0:
@@ -174,12 +188,50 @@ class Dssp():
                                 continue
                             if flag == 1:
                                 if row[13] == '!': continue
-                                if row[11] == self.chain:
-                                    self.secondary_structure += dictionary[row[16]]
+                                if row[11] == ch:
+                                    ss += dictionary[row[16]]
+                        self.dataset[key] = ss
                 else:
-                    with open(path_to_dssp + '/ss/' + id + '.dssp') as dssp_file:
-                        self.dataset[id] = dssp_file.read().splitlines()[1]
+                    try: dssp_file = open('dataset/' + self.setype + '/dssp/ss/' + key + '.dssp')
+                    except: 
+                        unknown.append(key)
+                        continue
+                    else: self.dataset[key] = dssp_file.read().splitlines()[1]
+            
+            if len(unknown) > 0:
+                print('These DSSP have not been found!\n', unknown)
 
+        return(self)
+    
+    def save(self):
+        for key in self.dataset.keys():
+            with open('dataset/' + self.setype + '/dssp/ss/' + key + '.dssp','w') as fileout:
+                fileout.write('>' + key + '\n' + self.dataset[key] + '\n') 
+
+    def fetch_dict(self) -> Dict:
+        return(self.dataset)
+
+class Fasta():
+    def __init__(self, id_file, setype):
+        with open(id_file) as filein:
+            id_list = filein.read().splitlines()
+        
+        self.residues = ['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W','Y','V']
+        self.setype = setype
+        self.dataset = dict((id, False) for id in id_list)
+
+    def parse(self, fastatype=False):
+        try:
+            fastatype == False
+        except:
+            print('Method usage: obj.parse(fastatype=(singleline, multiline))')
+            raise SystemExit
+        else:
+            for id in self.dataset:
+                path_to_fasta = './dataset/' + self.setype + '/fasta/'
+                if fastatype == 'singleline':
+                    with open(path_to_fasta + id + '.fasta') as fasta_file:
+                        self.dataset[id] = fasta_file.read().splitlines()[1]
         return(self)
 
     def fetch_dict(self) -> Dict:
@@ -187,15 +239,14 @@ class Dssp():
 
 if __name__ == '__main__':
     id_list = argv[1]
-    prof = Pssm(id_list, setype='testset', raw_file=True).parse()
-    dict_prof = prof.fetch_dict()
+    # prof = Pssm(id_list, setype='trainingset', raw_file=True).parse()
+    # dict_prof = prof.fetch_dict()
 
-    dssp = Dssp(id_list, setype='testset', raw_file=False).parse()
-    dict_dssp = dssp.fetch_dict()
+    dssp = Dssp(id_list, setype='blindset', raw_file=False, pdb=False).parse().save()
 
-    data = Dataset(id_list, setype='testset').build(profile=dict_prof, dssp=dict_dssp)
-    dataset = data.fetch_dict()
+    # data = Dataset(id_list, setype='testset').build(profile=dict_prof, dssp=dict_dssp)
+    # dataset = data.fetch_dict()
     # for key in dataset:
     #     print(key, '\n', dataset[key]['profile'], '\n')#, dataset[key]['dssp'])
 
-    data.save(path='./dataset/cv/fold5/', name='cv4.pkl')
+    # data.save(path='./dataset/cv/fold5/', name='cv4.pkl')

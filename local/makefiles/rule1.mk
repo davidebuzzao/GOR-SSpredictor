@@ -1,6 +1,10 @@
-##########################################
-###     LB2 Project: SS predictor      ###
-##########################################
+####################################################################################################
+###     LB2 Project: SS predictor      															 ###
+### PDB search to generate the Blind Set														 ###
+### Released between 2015-01-01 and 2019-09-10 and Sequence Length is between 50 and 300 		 ###
+### and Percent Sequence Alignment Search : PDB can contain Expression Tag sequence = Yes		 ###
+### and Resolution is between 0.0 and 2.5 and Representative Structures at 30% Sequence Identity ###
+####################################################################################################
 
 SHELL := /bin/bash
 
