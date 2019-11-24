@@ -1,1 +1,0 @@
-/Users/davidebuzzao/Projects/GOR/local/nextflow/work/6d/55b301a9f8cc69b06b95a49cd55238/BlindSet.res
