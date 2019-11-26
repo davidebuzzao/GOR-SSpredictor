@@ -70,9 +70,7 @@ def ss_piechart(str_dict, setype, outdir=False, RGB='Greys_r'):
                                     for i in range(len(sizes))])
 
     ax1.pie(sizes,\
-            #explode=(0.05,0.05,0.05),
             labeldistance=1.2,
-            #autopct='%1.1f%%',
             startangle=70,
             wedgeprops={"edgecolor":"k", 'linewidth': 1, 'linestyle': 'solid', 'antialiased': True})
     

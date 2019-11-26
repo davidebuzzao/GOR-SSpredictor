@@ -16,9 +16,6 @@ class Gor:
         self.overall = np.zeros((17,20))
         self.pad = np.zeros((self.window//2,20))
 
-    def __str__(self):
-        return '\n{0}\n{1}\n{2}\n'.format(self.dictionary[0],self.dictionary[1],self.dictionary[2])
-
     def train(self, dataset=False, padding=True):
         try: dataset != False
         except: 
@@ -54,7 +51,7 @@ class Gor:
         for index in range(len(self.ss)):
             self.dictionary[self.ss[index]] /= normalizer
             self.ss_count[self.ss[index]] /= normalizer
-        #print(np.sum(self.dictionary['-']) + np.sum(self.dictionary['H']) + np.sum(self.dictionary['E']))
+
         self.overall /= normalizer
         return(self)
 
@@ -110,29 +107,29 @@ class Gor:
             self.dictionary[self.ss[index]] = np.load(matrices_dir + input_names[index] + '.npy')
         return(self)
 
-# if __name__ == '__main__':
-#     try:
-#         filein = sys.argv[1]
-#         profiles_dir = sys.argv[2]
-#         dssps_dir = sys.argv[3]
-#         matrices_dir = sys.argv[4]
-#     except:
-#         print('Program Usage: ')
-#         raise SystemExit
-#     else:
-#         padding = np.zeros((17//2,20))
-#         model = Gor(17)
 
-#         with open(filein) as f:
-#             for id in f:
-#                 id = id.rstrip()
-#                 with open(dssps_dir + id + '.dssp') as dssp_file:
-#                     path = profiles_dir + id + '.clean.pssm'
-#                     dssp = dssp_file.read().splitlines()[1]
-#                     profile = prof_parse(path)
-#                     out = np.vstack((padding, profile, padding))
-#                     model.fit(profile, dssp, True)
+if __name__ == '__main__':
+    try:
+        filein = sys.argv[1]
+        profiles_dir = sys.argv[2]
+        dssps_dir = sys.argv[3]
+        matrices_dir = sys.argv[4]
+    except:
+        print('Program Usage: ')
+        raise SystemExit
+    else:
+        padding = np.zeros((17//2,20))
+        model = Gor(17)
 
-#         model.information()
-#         #np.set_printoptions(threshold=np.inf)
-#         model.save(matrices_dir)
+        with open(filein) as f:
+            for id in f:
+                id = id.rstrip()
+                with open(dssps_dir + id + '.dssp') as dssp_file:
+                    path = profiles_dir + id + '.clean.pssm'
+                    dssp = dssp_file.read().splitlines()[1]
+                    profile = prof_parse(path)
+                    out = np.vstack((padding, profile, padding))
+                    model.fit(profile, dssp, True)
+
+        model.information()
+        model.save(matrices_dir)

@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+
 import numpy as np, pickle
 from typing import List, Dict
 from sys import argv
@@ -6,10 +7,10 @@ from sys import argv
 class Dataset():
     '''
     The class Dataset is intended to be updated as soon as some new formatted files 
-    will be introduced in my bioinformatics pipelines. For the time being, sequence profiles
-    coming from psiblast runs and dssp outputs are parsed both starting from raw and pre-pruned 
-    files, then datasets are built by stacking information of single objects (by the use of other classes)
-    in order to deal with the whole DATABASE when training models in a Machine Learning framemwork.
+    will be introduced in my bioinformatics pipelines. For the time being, single-line fasta sequences, sequence profiles
+    coming from psiblast runs and dssp outputs are parsed both starting from raw and pre-pruned files, then datasets 
+    are built by stacking information of single objects (by the use of other classes) in order to deal with the whole 
+    dataset when training models.
     '''
     info_stored: List
     dataset: Dict
@@ -239,14 +240,14 @@ class Fasta():
 
 if __name__ == '__main__':
     id_list = argv[1]
-    # prof = Pssm(id_list, setype='trainingset', raw_file=True).parse()
-    # dict_prof = prof.fetch_dict()
+    prof = Pssm(id_list, setype='trainingset', raw_file=True).parse()
+    dict_prof = prof.fetch_dict()
 
     dssp = Dssp(id_list, setype='blindset', raw_file=False, pdb=False).parse().save()
 
-    # data = Dataset(id_list, setype='testset').build(profile=dict_prof, dssp=dict_dssp)
-    # dataset = data.fetch_dict()
-    # for key in dataset:
-    #     print(key, '\n', dataset[key]['profile'], '\n')#, dataset[key]['dssp'])
+    data = Dataset(id_list, setype='testset').build(profile=dict_prof, dssp=dict_dssp)
+    dataset = data.fetch_dict()
+    for key in dataset:
+        print(key, '\n', dataset[key]['profile'], '\n')#, dataset[key]['dssp'])
 
-    # data.save(path='./dataset/cv/fold5/', name='cv4.pkl')
+    data.save(path='./dataset/cv/fold5/', name='cv4.pkl')

@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 data_pkl = items[2]
                 setype = wd.split('/')[1]
 
-        # Build the dataset from scratch
+                # Build the dataset from scratch
                 prof = Pssm(data_id, setype=setype, raw_file=False).parse()
                 dict_prof = prof.fetch_dict()
                 dssp = Dssp(data_id, setype=setype, raw_file=False).parse()

@@ -27,3 +27,4 @@ if __name__ == '__main__':
                 with open(output_id[j], 'w') as fileout:
                     for i in range(i,i+block):
                         fileout.write(name[i])
+                    k = i + 1
