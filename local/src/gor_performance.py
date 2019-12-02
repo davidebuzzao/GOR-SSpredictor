@@ -97,7 +97,6 @@ if __name__ == '__main__':
             while scr < len(scores):
                 for j in set_list:
                     cv_average_ss[scores[scr]][i] += cv_dictionary[j][scores[scr]][i]
-                print(scores[scr],  cv_average_ss[scores[scr]])
 
                 cv_average_ss[scores[scr]][i] /= divisor1
                 scr += 1
@@ -112,7 +111,6 @@ if __name__ == '__main__':
                 while scr < len(scores):
                     for j in set_list:
                         cv_stderr_ss[scores[scr]][i] += np.power(cv_dictionary[j][scores[scr]][i] - cv_average_ss[scores[scr]][i], 2)
-                    print(scr,  cv_average_ss[scores[scr]])
                     cv_stderr_ss[scores[scr]][i] = (np.sqrt(cv_stderr_ss[scores[scr]][i]/(len(set_list)-1)))/np.sqrt(len(set_list))
                     scr += 1
             df_stderr = pd.DataFrame(cv_stderr_ss, index=['C','H','E'])
